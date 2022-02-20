@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ContentType } from './content-type.enum';
 import { Content } from './content.entity';
 
 import { ContentRepository } from './content.repository';
+import { CreateContentDto } from './dto/create-content.dto';
 
 @Injectable()
 export class ContentService {
@@ -11,7 +13,18 @@ export class ContentService {
     private contentRepository: ContentRepository,
   ) {}
 
-  async getAllContent(): Promise<Content[]> {
+  getAllContent(): Promise<Content[]> {
     return this.contentRepository.find();
+  }
+
+  async createContent(createContentDto: CreateContentDto): Promise<Content> {
+    const { text } = createContentDto;
+    const content = this.contentRepository.create({
+      text,
+      type: ContentType.IMAGE,
+    });
+
+    await this.contentRepository.save(content);
+    return content;
   }
 }
