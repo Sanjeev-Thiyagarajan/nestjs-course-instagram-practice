@@ -36,4 +36,14 @@ export class ContentService {
     await this.contentRepository.save(content);
     return content;
   }
+
+  async deleteContent(id: number): Promise<void> {
+    const result = await this.contentRepository.delete(id);
+
+    if (result.affected === 0) {
+      throw new NotFoundException(`Content with an id: ${id} does not exist`);
+    }
+
+    return;
+  }
 }

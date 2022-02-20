@@ -29,6 +29,11 @@ export class ContentController {
   createContent(@Body() createContentDto: CreateContentDto): Promise<Content> {
     return this.contentService.createContent(createContentDto);
   }
+
+  @Delete('/:id')
+  deleteContent(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.contentService.deleteContent(id);
+  }
   //   @Get()
   //   getOneContent() {}
   //   @Post()
