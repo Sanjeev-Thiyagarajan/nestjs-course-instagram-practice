@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ContentType } from './content-type.enum';
 import { Content } from './content.entity';
@@ -17,8 +17,13 @@ export class ContentService {
     return this.contentRepository.find();
   }
 
-  getContentById(id: number): Promise<Content> {
-    return this.contentRepository.findOne(id);
+  async getContentById(id: number): Promise<Content> {
+    const content = await this.contentRepository.findOne(id);
+
+    if (!content) {
+      throw new NotFoundException(`Content with an id: ${id} does not exist`);
+    }
+    return content;
   }
 
   async createContent(createContentDto: CreateContentDto): Promise<Content> {
