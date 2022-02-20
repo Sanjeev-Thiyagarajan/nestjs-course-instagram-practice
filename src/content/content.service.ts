@@ -17,6 +17,10 @@ export class ContentService {
     return this.contentRepository.find();
   }
 
+  getContentById(id: number): Promise<Content> {
+    return this.contentRepository.findOne(id);
+  }
+
   async createContent(createContentDto: CreateContentDto): Promise<Content> {
     const { text } = createContentDto;
     const content = this.contentRepository.create({

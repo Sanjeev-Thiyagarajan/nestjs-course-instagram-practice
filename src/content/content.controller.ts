@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+} from '@nestjs/common';
 import { Content } from './content.entity';
 import { ContentService } from './content.service';
 import { CreateContentDto } from './dto/create-content.dto';
@@ -9,6 +18,11 @@ export class ContentController {
   @Get()
   getAllContent(): Promise<Content[]> {
     return this.contentService.getAllContent();
+  }
+
+  @Get('/:id')
+  getContentById(@Param('id', ParseIntPipe) id: number): Promise<Content> {
+    return this.contentService.getContentById(id);
   }
 
   @Post()
