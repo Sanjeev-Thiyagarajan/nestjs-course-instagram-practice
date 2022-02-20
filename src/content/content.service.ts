@@ -19,23 +19,8 @@ export class ContentService {
     return this.contentRepository.find();
   }
 
-  async getContent(filterDto: GetContentFilterDto) {
-    const { search, type } = filterDto;
-
-    const query = this.contentRepository.createQueryBuilder('content');
-
-    if (search) {
-      query.andWhere('LOWER(content.text) LIKE LOWER(:search)', {
-        search: `%${search}%`,
-      });
-    }
-
-    if (type) {
-      query.andWhere('content.type = :type', { type });
-    }
-
-    const content = await query.getMany();
-    return content;
+  getContent(filterDto: GetContentFilterDto): Promise<Content[]> {
+    return this.contentRepository.getContent(filterDto);
   }
 
   async getContentById(id: number): Promise<Content> {
