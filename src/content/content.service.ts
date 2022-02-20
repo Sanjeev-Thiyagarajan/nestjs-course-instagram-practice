@@ -5,6 +5,7 @@ import { Content } from './content.entity';
 
 import { ContentRepository } from './content.repository';
 import { CreateContentDto } from './dto/create-content.dto';
+import { GetContentFilterDto } from './dto/get-content-filter.dto';
 import { UpdateContentDto } from './dto/udpate-content.dto';
 
 @Injectable()
@@ -16,6 +17,25 @@ export class ContentService {
 
   getAllContent(): Promise<Content[]> {
     return this.contentRepository.find();
+  }
+
+  async getContent(filterDto: GetContentFilterDto) {
+    const { search, type } = filterDto;
+
+    const query = this.contentRepository.createQueryBuilder('content');
+
+    if (search) {
+      query.andWhere('LOWER(content.text) LIKE LOWER(:search)', {
+        search: `%${search}%`,
+      });
+    }
+
+    if (type) {
+      query.andWhere('content.type = :type', { type });
+    }
+
+    const content = await query.getMany();
+    return content;
   }
 
   async getContentById(id: number): Promise<Content> {

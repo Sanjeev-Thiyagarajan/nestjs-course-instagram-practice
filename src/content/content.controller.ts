@@ -7,18 +7,20 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { Content } from './content.entity';
 import { ContentService } from './content.service';
 import { CreateContentDto } from './dto/create-content.dto';
+import { GetContentFilterDto } from './dto/get-content-filter.dto';
 import { UpdateContentDto } from './dto/udpate-content.dto';
 
 @Controller('content')
 export class ContentController {
   constructor(private contentService: ContentService) {}
   @Get()
-  getAllContent(): Promise<Content[]> {
-    return this.contentService.getAllContent();
+  getAllContent(@Query() filterDto: GetContentFilterDto): Promise<Content[]> {
+    return this.contentService.getContent(filterDto);
   }
 
   @Get('/:id')
