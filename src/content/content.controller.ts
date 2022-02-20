@@ -11,6 +11,7 @@ import {
 import { Content } from './content.entity';
 import { ContentService } from './content.service';
 import { CreateContentDto } from './dto/create-content.dto';
+import { UpdateContentDto } from './dto/udpate-content.dto';
 
 @Controller('content')
 export class ContentController {
@@ -33,6 +34,14 @@ export class ContentController {
   @Delete('/:id')
   deleteContent(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.contentService.deleteContent(id);
+  }
+
+  @Patch('/:id')
+  updateContent(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateContentDto: UpdateContentDto,
+  ): Promise<Content> {
+    return this.contentService.updateContent(id, updateContentDto);
   }
   //   @Get()
   //   getOneContent() {}

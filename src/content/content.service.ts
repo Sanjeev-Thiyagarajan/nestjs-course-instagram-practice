@@ -5,6 +5,7 @@ import { Content } from './content.entity';
 
 import { ContentRepository } from './content.repository';
 import { CreateContentDto } from './dto/create-content.dto';
+import { UpdateContentDto } from './dto/udpate-content.dto';
 
 @Injectable()
 export class ContentService {
@@ -45,5 +46,20 @@ export class ContentService {
     }
 
     return;
+  }
+
+  async updateContent(
+    id: number,
+    updateContentDto: UpdateContentDto,
+  ): Promise<Content> {
+    const content = await this.contentRepository.findOne(id);
+
+    if (!content) {
+      throw new NotFoundException(`Content with an id: ${id} does not exist`);
+    }
+
+    Object.assign(content, updateContentDto);
+    await this.contentRepository.save(content);
+    return content;
   }
 }
