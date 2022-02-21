@@ -8,7 +8,9 @@ import {
   Patch,
   Post,
   Query,
+  UseInterceptors,
 } from '@nestjs/common';
+import { TransformInterceptor } from 'src/interceptors/transform.interceptor';
 import { Content } from './content.entity';
 import { ContentService } from './content.service';
 import { CreateContentDto } from './dto/create-content.dto';
@@ -18,6 +20,7 @@ import { UpdateContentDto } from './dto/udpate-content.dto';
 @Controller('content')
 export class ContentController {
   constructor(private contentService: ContentService) {}
+
   @Get()
   getAllContent(@Query() filterDto: GetContentFilterDto): Promise<Content[]> {
     return this.contentService.getContent(filterDto);
