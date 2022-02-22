@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { SignUpDto } from './dto/sign-up.dto';
 import { User } from './user.entity';
 import { UsersRepository } from './users.repository';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -23,7 +24,12 @@ export class AuthService {
       throw new ConflictException('Email is already in use');
     }
 
-    const user = this.usersRepository.create({ username, password });
+    const passwordHash = await bcrypt.hash(password, 12);
+
+    const user = this.usersRepository.create({
+      username,
+      password: passwordHash,
+    });
     await this.usersRepository.save(user);
     return user;
   }
