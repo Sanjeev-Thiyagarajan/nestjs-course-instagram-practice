@@ -20,11 +20,11 @@ import { GetContentFilterDto } from './dto/get-content-filter.dto';
 import { UpdateContentDto } from './dto/udpate-content.dto';
 
 @Controller('content')
-@UseGuards(AuthGuard())
 export class ContentController {
   constructor(private contentService: ContentService) {}
 
   @Get()
+  @UseGuards(AuthGuard())
   getAllContent(@Query() filterDto: GetContentFilterDto): Promise<Content[]> {
     return this.contentService.getContent(filterDto);
   }
@@ -35,16 +35,19 @@ export class ContentController {
   }
 
   @Post()
+  @UseGuards(AuthGuard())
   createContent(@Body() createContentDto: CreateContentDto): Promise<Content> {
     return this.contentService.createContent(createContentDto);
   }
 
   @Delete('/:id')
+  @UseGuards(AuthGuard())
   deleteContent(@Param('id', ParseIntPipe) id: number): Promise<void> {
     return this.contentService.deleteContent(id);
   }
 
   @Patch('/:id')
+  @UseGuards(AuthGuard())
   updateContent(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateContentDto: UpdateContentDto,

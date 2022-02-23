@@ -1,7 +1,9 @@
+import { User } from 'src/auth/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -23,4 +25,7 @@ export class Content {
 
   @UpdateDateColumn({ type: 'timestamptz' })
   updated_at: Date;
+
+  @ManyToOne((type) => User, (user) => user.contents, { eager: false })
+  user: User;
 }
