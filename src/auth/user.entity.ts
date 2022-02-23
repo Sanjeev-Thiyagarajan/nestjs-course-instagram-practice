@@ -28,6 +28,6 @@ export class User {
   @UpdateDateColumn({ type: 'timestamptz' })
   updated_at: Date;
 
-  @OneToMany((type) => Content, (content) => content.user, { eager: true })
+  @OneToMany((type) => Content, (content) => content.user)
   contents: Content[];
 }

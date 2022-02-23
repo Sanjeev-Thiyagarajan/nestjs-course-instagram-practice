@@ -13,6 +13,8 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from 'src/auth/get-user.decorator';
+import { User } from 'src/auth/user.entity';
 import { TransformInterceptor } from 'src/interceptors/transform.interceptor';
 import { Content } from './content.entity';
 import { ContentService } from './content.service';
@@ -39,9 +41,8 @@ export class ContentController {
   @UseGuards(AuthGuard())
   createContent(
     @Body() createContentDto: CreateContentDto,
-    @Req() req,
+    @GetUser() user: User,
   ): Promise<Content> {
-    const { user } = req;
     return this.contentService.createContent(createContentDto, user);
   }
 
