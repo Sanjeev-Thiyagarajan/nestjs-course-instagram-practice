@@ -8,8 +8,10 @@ import {
   Patch,
   Post,
   Query,
+  UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { TransformInterceptor } from 'src/interceptors/transform.interceptor';
 import { Content } from './content.entity';
 import { ContentService } from './content.service';
@@ -18,6 +20,7 @@ import { GetContentFilterDto } from './dto/get-content-filter.dto';
 import { UpdateContentDto } from './dto/udpate-content.dto';
 
 @Controller('content')
+@UseGuards(AuthGuard())
 export class ContentController {
   constructor(private contentService: ContentService) {}
 
