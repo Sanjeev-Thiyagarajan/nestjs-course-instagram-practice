@@ -3,6 +3,7 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  IsNull,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -26,6 +27,9 @@ export class Content {
   @UpdateDateColumn({ type: 'timestamptz' })
   updated_at: Date;
 
-  @ManyToOne((type) => User, (user) => user.contents, { eager: false })
+  @ManyToOne((type) => User, (user) => user.contents, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   user: User;
 }

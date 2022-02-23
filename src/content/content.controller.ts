@@ -8,6 +8,7 @@ import {
   Patch,
   Post,
   Query,
+  Req,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -36,8 +37,12 @@ export class ContentController {
 
   @Post()
   @UseGuards(AuthGuard())
-  createContent(@Body() createContentDto: CreateContentDto): Promise<Content> {
-    return this.contentService.createContent(createContentDto);
+  createContent(
+    @Body() createContentDto: CreateContentDto,
+    @Req() req,
+  ): Promise<Content> {
+    const { user } = req;
+    return this.contentService.createContent(createContentDto, user);
   }
 
   @Delete('/:id')

@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/auth/user.entity';
 import { ContentType } from './content-type.enum';
 import { Content } from './content.entity';
 
@@ -32,11 +33,15 @@ export class ContentService {
     return content;
   }
 
-  async createContent(createContentDto: CreateContentDto): Promise<Content> {
+  async createContent(
+    createContentDto: CreateContentDto,
+    user: User,
+  ): Promise<Content> {
     const { text } = createContentDto;
     const content = this.contentRepository.create({
       text,
       type: ContentType.IMAGE,
+      user,
     });
 
     await this.contentRepository.save(content);
