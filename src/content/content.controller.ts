@@ -27,7 +27,6 @@ export class ContentController {
   constructor(private contentService: ContentService) {}
 
   @Get()
-  @UseGuards(AuthGuard())
   getAllContent(@Query() filterDto: GetContentFilterDto): Promise<Content[]> {
     return this.contentService.getContent(filterDto);
   }
@@ -48,8 +47,11 @@ export class ContentController {
 
   @Delete('/:id')
   @UseGuards(AuthGuard())
-  deleteContent(@Param('id', ParseIntPipe) id: number): Promise<void> {
-    return this.contentService.deleteContent(id);
+  deleteContent(
+    @Param('id', ParseIntPipe) id: number,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return this.contentService.deleteContent(id, user);
   }
 
   @Patch('/:id')
@@ -57,8 +59,9 @@ export class ContentController {
   updateContent(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateContentDto: UpdateContentDto,
+    @GetUser() user: User,
   ): Promise<Content> {
-    return this.contentService.updateContent(id, updateContentDto);
+    return this.contentService.updateContent(id, updateContentDto, user);
   }
   //   @Get()
   //   getOneContent() {}

@@ -10,7 +10,7 @@ export class ContentRepository extends Repository<Content> {
     const query = this.createQueryBuilder('content');
 
     if (search) {
-      query.andWhere('LOWER(content.text) LIKE LOWER(:search)', {
+      query.andWhere('(LOWER(content.text) LIKE LOWER(:search))', {
         search: `%${search}%`,
       });
     }

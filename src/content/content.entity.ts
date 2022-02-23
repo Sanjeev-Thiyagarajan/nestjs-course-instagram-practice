@@ -30,6 +30,7 @@ export class Content {
   @ManyToOne((type) => User, (user) => user.contents, {
     nullable: false,
     onDelete: 'CASCADE',
+    eager: true,
   })
   user: User;
 }

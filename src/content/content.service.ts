@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/auth/user.entity';
 import { ContentType } from './content-type.enum';
@@ -48,12 +52,14 @@ export class ContentService {
     return content;
   }
 
-  async deleteContent(id: number): Promise<void> {
-    const result = await this.contentRepository.delete(id);
+  async deleteContent(id: number, user: User): Promise<void> {
+    const content = await this.getContentById(id);
 
-    if (result.affected === 0) {
-      throw new NotFoundException(`Content with an id: ${id} does not exist`);
+    if (content.user.id !== user.id) {
+      throw new ForbiddenException(`Resource is forbidden`);
     }
+
+    const result = await this.contentRepository.delete({ id });
 
     return;
   }
@@ -61,11 +67,16 @@ export class ContentService {
   async updateContent(
     id: number,
     updateContentDto: UpdateContentDto,
+    user: User,
   ): Promise<Content> {
     const content = await this.contentRepository.findOne(id);
 
     if (!content) {
       throw new NotFoundException(`Content with an id: ${id} does not exist`);
+    }
+
+    if (content.user.id !== user.id) {
+      throw new ForbiddenException(`Resource is forbidden`);
     }
 
     Object.assign(content, updateContentDto);
