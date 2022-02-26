@@ -29,7 +29,12 @@ export class ContentService {
   }
 
   async getContentById(id: number): Promise<Content> {
-    const content = await this.contentRepository.findOne(id);
+    const content = await this.contentRepository.findOne({
+      where: {
+        id,
+      },
+      relations: ['user'],
+    });
 
     if (!content) {
       throw new NotFoundException(`Content with an id: ${id} does not exist`);
@@ -69,7 +74,13 @@ export class ContentService {
     updateContentDto: UpdateContentDto,
     user: User,
   ): Promise<Content> {
-    const content = await this.contentRepository.findOne(id);
+    const content = await this.contentRepository.findOne({
+      where: {
+        id,
+      },
+      relations: ['user'],
+    });
+    console.log(content);
 
     if (!content) {
       throw new NotFoundException(`Content with an id: ${id} does not exist`);
