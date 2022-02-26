@@ -17,10 +17,14 @@ import { User } from './user.entity';
 import { AuthGuard } from '@nestjs/passport';
 import { Request, Response, response } from 'express';
 import { Cookies } from 'src/decorators/create-param.decorator';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private configService: ConfigService,
+  ) {}
 
   @UseInterceptors(ClassSerializerInterceptor)
   @Post('/signup')
@@ -40,6 +44,7 @@ export class AuthController {
       httpOnly: true,
       expires: expiresDate,
     });
+
     return this.authService.signIn(signInDto);
   }
 
