@@ -1,3 +1,5 @@
+import { Exclude, Transform } from 'class-transformer';
+import { userInfo } from 'os';
 import { User } from 'src/auth/user.entity';
 import {
   Column,
@@ -32,5 +34,7 @@ export class Content {
     nullable: false,
     onDelete: 'CASCADE',
   })
+  //   @Exclude({ toPlainOnly: true })
+  @Transform(({ obj }) => obj.user.id, { toPlainOnly: true })
   user: User;
 }
