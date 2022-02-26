@@ -15,6 +15,7 @@ import { AccessTokenPayload } from './access-token-payload.interface';
 import * as jwt from 'jsonwebtoken';
 import { RefreshTokensRepository } from './refresh-tokens.repository';
 import { stringify } from 'querystring';
+import { RefreshTokenPayload } from './refresh-token-payload.interface';
 
 @Injectable()
 export class AuthService {
@@ -71,6 +72,7 @@ export class AuthService {
       this.jwtService.sign(access_payload),
       this.jwtService.sign(refresh_payload, {
         expiresIn: 604800,
+        // expiresIn: 10,
       }),
     ]);
 
@@ -88,5 +90,28 @@ export class AuthService {
       refreshToken,
       expiresDate,
     };
+  }
+
+  async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
+    let payload;
+    try {
+      payload = jwt.verify(refreshToken, 'mypassword');
+    } catch (err) {
+      throw new UnauthorizedException();
+    }
+
+    const foundToken = await this.refreshTokensRepository.findOne({
+      where: {
+        refreshToken,
+      },
+    });
+
+    if (!foundToken) {
+      throw new UnauthorizedException();
+    }
+
+    const access_payload: AccessTokenPayload = { username: payload.username };
+    const accessToken = await this.jwtService.sign(access_payload);
+    return { accessToken };
   }
 }

@@ -6,6 +6,7 @@ import {
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -14,7 +15,8 @@ import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { User } from './user.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { Response, response } from 'express';
+import { Request, Response, response } from 'express';
+import { Cookies } from 'src/decorators/create-param.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -46,5 +48,13 @@ export class AuthController {
   test(@Req() req) {
     console.log(req);
     return 'hello';
+  }
+
+  @Get('/token')
+  token(@Cookies('refreshToken') refreshToken: string) {
+    if (!refreshToken) {
+      throw new UnauthorizedException();
+    }
+    return this.authService.refreshToken(refreshToken);
   }
 }
