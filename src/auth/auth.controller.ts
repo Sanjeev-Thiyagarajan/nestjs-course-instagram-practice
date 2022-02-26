@@ -5,6 +5,7 @@ import {
   Get,
   Post,
   Req,
+  Res,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -13,6 +14,7 @@ import { SignUpDto } from './dto/sign-up.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { User } from './user.entity';
 import { AuthGuard } from '@nestjs/passport';
+import { Response, response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -25,7 +27,17 @@ export class AuthController {
   }
 
   @Post('/signin')
-  signIn(@Body() signInDto: SignInDto): Promise<{ accessToken: string }> {
+  async signIn(
+    @Body() signInDto: SignInDto,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    const { refreshToken, expiresDate } = await this.authService.signIn(
+      signInDto,
+    );
+    response.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      expires: expiresDate,
+    });
     return this.authService.signIn(signInDto);
   }
 

@@ -12,12 +12,17 @@ import * as bcrypt from 'bcrypt';
 import { SignInDto } from './dto/sign-in.dto';
 import { JwtService } from '@nestjs/jwt';
 import { AccessTokenPayload } from './access-token-payload.interface';
+import * as jwt from 'jsonwebtoken';
+import { RefreshTokensRepository } from './refresh-tokens.repository';
+import { stringify } from 'querystring';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UsersRepository) private usersRepository: UsersRepository,
     private jwtService: JwtService,
+    @InjectRepository(RefreshTokensRepository)
+    private refreshTokensRepository: RefreshTokensRepository,
   ) {}
 
   async signUp(signUpDto: SignUpDto): Promise<User> {
@@ -39,7 +44,9 @@ export class AuthService {
     return user;
   }
 
-  async signIn(signInDto: SignInDto): Promise<{ accessToken: string }> {
+  async signIn(
+    signInDto: SignInDto,
+  ): Promise<{ accessToken: string; refreshToken: string; expiresDate: Date }> {
     const { username, password } = signInDto;
 
     const user = await this.usersRepository.findOne({ username });
@@ -53,10 +60,33 @@ export class AuthService {
     if (!passwordCompareResult) {
       throw new UnauthorizedException('Username or Password is incorrect');
     }
-    const payload: AccessTokenPayload = { username };
-    const accessToken: string = await this.jwtService.sign(payload);
+    const access_payload: AccessTokenPayload = { username };
+    const refresh_payload: AccessTokenPayload = { username };
+    // const accessToken: string = this.jwtService.sign(access_payload);
+    // const refreshToken: string = this.jwtService.sign(refresh_payload, {
+    //   expiresIn: 604800,
+    // });
+
+    const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.sign(access_payload),
+      this.jwtService.sign(refresh_payload, {
+        expiresIn: 604800,
+      }),
+    ]);
+
+    const expiresDate = new Date(Date.now() + 604800000);
+
+    const refreshTokenPersist = this.refreshTokensRepository.create({
+      refreshToken,
+      user,
+      expiresAt: expiresDate,
+    });
+
+    await this.refreshTokensRepository.save(refreshTokenPersist);
     return {
       accessToken,
+      refreshToken,
+      expiresDate,
     };
   }
 }
