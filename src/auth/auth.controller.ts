@@ -50,11 +50,20 @@ export class AuthController {
     return 'hello';
   }
 
-  @Get('/token')
+  @Post('/token')
   token(@Cookies('refreshToken') refreshToken: string) {
     if (!refreshToken) {
       throw new UnauthorizedException();
     }
     return this.authService.refreshToken(refreshToken);
+  }
+
+  @Get('/logout')
+  logout(
+    @Cookies('refreshToken') refreshToken: string,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    response.clearCookie('refreshToken');
+    return this.authService.logout(refreshToken);
   }
 }

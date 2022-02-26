@@ -114,4 +114,9 @@ export class AuthService {
     const accessToken = await this.jwtService.sign(access_payload);
     return { accessToken };
   }
+
+  async logout(refreshToken: string) {
+    await this.refreshTokensRepository.delete(refreshToken);
+    return;
+  }
 }
