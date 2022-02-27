@@ -38,5 +38,6 @@ export class Comments {
     nullable: false,
     onDelete: 'CASCADE',
   })
+  @Transform(({ obj }) => obj.content.id, { toPlainOnly: true })
   content: Content;
 }
