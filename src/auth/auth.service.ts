@@ -16,6 +16,7 @@ import * as jwt from 'jsonwebtoken';
 import { RefreshTokensRepository } from './refresh-tokens.repository';
 import { stringify } from 'querystring';
 import { RefreshTokenPayload } from './refresh-token-payload.interface';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class AuthService {
@@ -24,6 +25,7 @@ export class AuthService {
     private jwtService: JwtService,
     @InjectRepository(RefreshTokensRepository)
     private refreshTokensRepository: RefreshTokensRepository,
+    private configService: ConfigService,
   ) {}
 
   async signUp(signUpDto: SignUpDto): Promise<User> {
@@ -72,6 +74,7 @@ export class AuthService {
       this.jwtService.sign(access_payload),
       this.jwtService.sign(refresh_payload, {
         expiresIn: 604800,
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
         // expiresIn: 10,
       }),
     ]);
@@ -95,7 +98,10 @@ export class AuthService {
   async refreshToken(refreshToken: string): Promise<{ accessToken: string }> {
     let payload;
     try {
-      payload = jwt.verify(refreshToken, 'mypassword');
+      payload = jwt.verify(
+        refreshToken,
+        this.configService.get<string>('JWT_REFRESH_SECRET'),
+      );
     } catch (err) {
       throw new UnauthorizedException();
     }

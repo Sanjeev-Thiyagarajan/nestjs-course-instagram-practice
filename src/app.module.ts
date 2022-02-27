@@ -6,12 +6,13 @@ import { ContentModule } from './content/content.module';
 import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configSchema } from 'src/config.schema';
+import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env.development',
+      envFilePath: '.env',
       validationSchema: configSchema,
     }),
     ContentModule,
@@ -29,7 +30,7 @@ import { configSchema } from 'src/config.schema';
           synchronize: true,
         };
       },
-    }),
+    }), //
     // TypeOrmModule.forRoot({
     //   type: 'postgres',
     //   host: 'localhost',
@@ -40,7 +41,7 @@ import { configSchema } from 'src/config.schema';
     //   autoLoadEntities: true,
     //   synchronize: true,
     // }),
-    AuthModule,
+    AuthModule, CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

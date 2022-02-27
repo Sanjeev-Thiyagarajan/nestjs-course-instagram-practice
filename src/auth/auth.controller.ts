@@ -36,16 +36,15 @@ export class AuthController {
   async signIn(
     @Body() signInDto: SignInDto,
     @Res({ passthrough: true }) response: Response,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
-    const { refreshToken, expiresDate } = await this.authService.signIn(
-      signInDto,
-    );
+  ): Promise<{ accessToken: string }> {
+    const { refreshToken, expiresDate, accessToken } =
+      await this.authService.signIn(signInDto);
     response.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       expires: expiresDate,
     });
 
-    return this.authService.signIn(signInDto);
+    return { accessToken };
   }
 
   @Get('/testauth')

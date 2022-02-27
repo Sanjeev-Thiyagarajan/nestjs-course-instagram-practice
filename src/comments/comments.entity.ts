@@ -1,31 +1,24 @@
-import { Exclude, Transform } from 'class-transformer';
-import { userInfo } from 'os';
+import { Transform } from 'class-transformer';
 import { User } from 'src/auth/user.entity';
-import { Comments } from 'src/comments/comments.entity';
+import { Content } from 'src/content/content.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
-  IsNull,
-  JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ContentType } from './content-type.enum';
+
 // import { MediaFile } from './media-file.entity';
 
 @Entity()
-export class Content {
+export class Comments {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   text: string;
-
-  @Column()
-  type: ContentType;
 
   @CreateDateColumn({ type: 'timestamptz' })
   created_at: Date;
@@ -41,9 +34,9 @@ export class Content {
   @Transform(({ obj }) => obj.user.id, { toPlainOnly: true })
   user: User;
 
-  @OneToMany((type) => Comments, (comments) => comments.content)
-  comments: Comments[];
-
-  //   @OneToMany((type) => MediaFile, (mediaFile) => mediaFile.content)
-  //   mediaFiles: MediaFile[];
+  @ManyToOne(() => Content, (content) => content.comments, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  content: Content;
 }
