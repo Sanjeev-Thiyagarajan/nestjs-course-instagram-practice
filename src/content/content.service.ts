@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/auth/user.entity';
+import { Votes } from 'src/votes/vote.entity';
 import { ContentType } from './content-type.enum';
 import { Content } from './content.entity';
 
@@ -21,7 +22,7 @@ export class ContentService {
   ) {}
 
   getAllContent(): Promise<Content[]> {
-    return this.contentRepository.find();
+    return this.contentRepository.find({ relations: ['votes'] });
   }
 
   getContent(filterDto: GetContentFilterDto): Promise<Content[]> {

@@ -7,7 +7,15 @@ export class ContentRepository extends Repository<Content> {
   async getContent(filterDto: GetContentFilterDto): Promise<Content[]> {
     const { search, type } = filterDto;
 
-    const query = this.createQueryBuilder('content');
+    // const query = this.createQueryBuilder('content').leftJoinAndSelect(
+    //   'content.votes',
+    //   'votes',
+    // );
+    const query = this.createQueryBuilder('content').leftJoinAndSelect(
+      'content.votes',
+      'votes',
+    );
+    //   .loadRelationCountAndMap('content.votesa', 'content.votes');
 
     if (search) {
       query.andWhere('(LOWER(content.text) LIKE LOWER(:search))', {

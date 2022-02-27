@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { configSchema } from 'src/config.schema';
 import { CommentsModule } from './comments/comments.module';
+import { VotesModule } from './votes/votes.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { CommentsModule } from './comments/comments.module';
     // }),
     AuthModule,
     CommentsModule,
+    VotesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

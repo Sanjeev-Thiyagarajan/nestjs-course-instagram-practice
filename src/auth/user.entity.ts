@@ -1,5 +1,6 @@
 import { Exclude } from 'class-transformer';
 import { Content } from 'src/content/content.entity';
+import { Votes } from 'src/votes/vote.entity';
 import {
   Column,
   CreateDateColumn,
@@ -30,4 +31,7 @@ export class User {
 
   @OneToMany((type) => Content, (content) => content.user)
   contents: Content[];
+
+  @OneToMany((type) => Votes, (votes) => votes.content)
+  votes: Votes[];
 }
