@@ -16,6 +16,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { ContentType } from './content-type.enum';
+import { MediaFile } from './media-file.entity';
 // import { MediaFile } from './media-file.entity';
 
 @Entity()
@@ -50,6 +51,11 @@ export class Content {
   @Transform(({ obj }) => obj.votes.length, { toPlainOnly: true })
   votes: Votes[];
 
-  //   @OneToMany((type) => MediaFile, (mediaFile) => mediaFile.content)
-  //   mediaFiles: MediaFile[];
+  @OneToMany((type) => MediaFile, (mediaFile) => mediaFile.content, {
+    eager: true,
+  })
+  @Transform(({ obj }) => obj.mediaFiles.map((mediaFile) => mediaFile.url), {
+    toPlainOnly: true,
+  })
+  mediaFiles: MediaFile[];
 }

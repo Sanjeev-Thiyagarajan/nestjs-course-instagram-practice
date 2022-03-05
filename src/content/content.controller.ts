@@ -10,10 +10,12 @@ import {
   Post,
   Query,
   Req,
+  UploadedFile,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { User } from 'src/auth/user.entity';
 import { TransformInterceptor } from 'src/interceptors/transform.interceptor';
@@ -22,6 +24,7 @@ import { ContentService } from './content.service';
 import { CreateContentDto } from './dto/create-content.dto';
 import { GetContentFilterDto } from './dto/get-content-filter.dto';
 import { UpdateContentDto } from './dto/udpate-content.dto';
+import { contentFileFilter } from './file-filter';
 
 @Controller('content')
 export class ContentController {
@@ -39,11 +42,19 @@ export class ContentController {
 
   @Post()
   @UseGuards(AuthGuard())
+  @UseInterceptors(
+    FileInterceptor('file', {
+      limits: { fieldSize: 100000000 },
+      fileFilter: contentFileFilter,
+    }),
+  )
   createContent(
     @Body() createContentDto: CreateContentDto,
     @GetUser() user: User,
+    @UploadedFile() file: Express.Multer.File,
   ): Promise<Content> {
-    return this.contentService.createContent(createContentDto, user);
+    const fileType = file.mimetype.split('/')[0];
+    return this.contentService.createContent(createContentDto, user, file);
   }
 
   @Delete('/:id')

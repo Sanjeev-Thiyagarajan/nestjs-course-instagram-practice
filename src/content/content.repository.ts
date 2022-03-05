@@ -11,10 +11,9 @@ export class ContentRepository extends Repository<Content> {
     //   'content.votes',
     //   'votes',
     // );
-    const query = this.createQueryBuilder('content').leftJoinAndSelect(
-      'content.votes',
-      'votes',
-    );
+    const query = this.createQueryBuilder('content')
+      .leftJoinAndSelect('content.votes', 'votes')
+      .leftJoinAndSelect('content.mediaFiles', 'media_file');
     //   .loadRelationCountAndMap('content.votesa', 'content.votes');
 
     if (search) {

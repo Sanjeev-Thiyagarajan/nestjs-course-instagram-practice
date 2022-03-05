@@ -46,7 +46,5 @@ import { VotesModule } from './votes/votes.module';
     CommentsModule,
     VotesModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
