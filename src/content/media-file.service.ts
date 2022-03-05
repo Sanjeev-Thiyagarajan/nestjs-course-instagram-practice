@@ -10,7 +10,13 @@ import { Injectable } from '@nestjs/common';
 export class MediaFileService {
   constructor(private configService: ConfigService) {}
   async uploadMediaFile(dataBuffer: Buffer, filename: string) {
-    const s3 = new S3();
+    const s3 = new S3({
+      endpoint: 'http://127.0.0.1:9000',
+      s3ForcePathStyle: true,
+      signatureVersion: 'v4',
+      secretAccessKey: 'password123',
+      accessKeyId: 'sanjeev',
+    });
     const result = await s3
       .upload({
         Bucket: this.configService.get('AWS_BUCKET_NAME'),
@@ -36,7 +42,7 @@ export class MediaFileService {
       Key: string;
     }[],
   ) {
-    const s3 = new S3();
+    const s3 = new S3({});
     await s3
       .deleteObjects({
         Bucket: this.configService.get('AWS_BUCKET_NAME'),

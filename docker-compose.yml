@@ -10,34 +10,34 @@ services:
       - 9001:9001
     command: server /data --console-address ":9001"
 
-  api:
-    build:
-      context: .
-      target: development
-    volumes:
-      - .:/user/src/app
-      - /usr/src/app/node_modules
-    ports:
-     - 3000:3000
-    command: npm run start:dev
-    env_file:
-      - .env
-    depends_on:
-      - postgres
+#   api:
+#     build:
+#       context: .
+#       target: development
+#     volumes:
+#       - .:/user/src/app
+#       - /usr/src/app/node_modules
+#     ports:
+#      - 3000:3000
+#     command: npm run start:dev
+#     env_file:
+#       - .env
+#     depends_on:
+#       - postgres
   
-  postgres:
-    image: postgres
+#   postgres:
+#     image: postgres
 
-    environment:
-      POSTGRES_PASSWORD: ${DB_PASSWORD}
-      POSTGRES_USER: ${DB_USERNAME}
-      POSTGRES_DB: ${DB_NAME}
-      PG_DATA: /var/lib/postgresql/data
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+#     environment:
+#       POSTGRES_PASSWORD: ${DB_PASSWORD}
+#       POSTGRES_USER: ${DB_USERNAME}
+#       POSTGRES_DB: ${DB_NAME}
+#       PG_DATA: /var/lib/postgresql/data
+#     volumes:
+#       - pgdata:/var/lib/postgresql/data
     
-    ports:
-      - 5400:5432
+#     ports:
+#       - 5400:5432
 volumes:
   pgdata:
   filedata:
