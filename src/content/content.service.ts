@@ -78,8 +78,13 @@ export class ContentService {
     });
 
     await this.mediaFileRepository.save(newMediaFile);
-
-    return content;
+    const newContent = await this.contentRepository.findOne({
+      where: {
+        id: content.id,
+      },
+      relations: ['mediaFiles'],
+    });
+    return newContent;
   }
 
   async deleteContent(id: number, user: User): Promise<void> {
